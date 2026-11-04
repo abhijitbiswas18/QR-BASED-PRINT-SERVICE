@@ -1,0 +1,12 @@
+dist/
+*.exe
+node_modules/
+data/
+uploads/
+converted/
+dist/
+*.exe
+node_modules/
+data/
+uploads/
+converted/
