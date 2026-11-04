@@ -23,7 +23,7 @@ Prompts during setup for Branding (site header text) and writes data/config.json
 Compiles/installs a Windows service wrapper (PrintServiceHost.exe)<br> that runs the Node server hidden and starts it automatically <br>(also available as PrintServiceHost.exe /install / /uninstall).
 Registers and starts the “BI Print Service” Windows service.
 
-Then open `http://localhost:3000/` on this machine, or scan the QR (printed on the page) from a phone on the same Wi-Fi. Admin panel: `http://localhost:3000/admin.html` (default password `admin`, change via `ADMIN_PASSWORD` env).
+Then open `http://localhost:3000/` on this machine, or scan the QR (printed on the page) from a phone on the same Wi-Fi. Admin panel: `http://localhost:3000/admin.html` (default password `admin`, change via Admin panel).
 
 ## Print flow (queued + admin approval)
 - User uploads -> reviews -> submits a **print job**. The UI shows a **Job ID** (no immediate printing).
