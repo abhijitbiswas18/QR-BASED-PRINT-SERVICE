@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BI Print Service - Image Print</title>
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<header class="bar">
+  <div>
+    <h1>BI Print Service - Image Print</h1>
+    <span class="sub">Upload image -&gt; Review -&gt; Pick printer -&gt; Submit print job</span>
+  </div>
+  <div class="tabs">
+    <a class="tab" href="/">PDF PRINT</a>
+  </div>
+</header>
+<div class="layout">
+  <nav class="sidebar">
+    <button class="side-item active" data-sec="sec-upload">Upload</button>
+    <button class="side-item" data-sec="sec-review">Review</button>
+    <button class="side-item" data-sec="sec-print">Print settings</button>
+    <button class="side-item" data-sec="sec-ready">Ready to print</button>
+  </nav>
+  <main class="content">
+    <section id="sec-upload" class="card section active">
+      <h2 id="uploadHeading">1. UPLOAD IMAGE</h2>
+      <div id="dropzone" class="dropzone">
+        <p>Drag and drop JPEG/JPG image here, or click to choose</p>
+        <input type="file" id="fileInput" accept="image/jpeg,.jpg,.jpeg">
+      </div>
+      <div id="uploadStatus"></div>
+    </section>
+
+    <section id="sec-review" class="card section">
+      <h2>2. REVIEW YOUR UPLOADED IMAGE</h2>
+      <div class="row">
+        <button id="removeBtn" disabled>Remove selected</button>
+        <span class="muted">Click an image to select it; use Remove to delete it.</span>
+      </div>
+      <div id="gallery" class="gallery"></div>
+      <div id="docPreview" class="docpreview"></div>
+      <div class="row" style="margin-top:12px">
+        <label>Print Type:
+          <select id="printTypeSel">
+            <option value="print_now">1. Print Now</option>
+            <option value="print_after_edit">2. Print After Edit</option>
+          </select>
+        </label>
+        <button id="okReviewBtn">OK</button>
+      </div>
+    </section>
+
+    <section id="sec-print" class="card section">
+      <h2>3. PRINT SETTING</h2>
+      <div class="row">
+        <label class="radio"><input type="radio" name="mode" value="color" checked> Color</label>
+        <label class="radio"><input type="radio" name="mode" value="mono"> Black &amp; White</label>
+      </div>
+      
+      <div class="row">
+        <label>Printer:
+          <select id="printerSel"></select>
+        </label>
+      </div>
+      <div class="row">
+        <label>Copies:
+          <input type="number" id="copiesInput" value="1" min="1" max="999" style="width:70px;padding:6px 8px;border-radius:6px;border:1px solid #475569;background:#0f172a;color:#e2e8f0">
+        </label>
+        <span class="muted">Total number of copies.</span>
+      </div>
+      <div id="pageOpts" class="row" style="display:none">
+        <label>Pages:
+          <select id="pagesSelect">
+            <option value="all">All pages</option>
+            <option value="1">First page only</option>
+            <option value="last">Last page only</option>
+            <option value="odd">Odd pages</option>
+            <option value="even">Even pages</option>
+            <option value="custom">Custom range...</option>
+          </select>
+        </label>
+        <input type="text" id="pagesInput" placeholder="e.g. 2, 1-5, 1,3,5-7" style="display:none">
+        <span class="muted">For PDF. Use "Custom range" to type pages.</span>
+      </div>
+      <div class="row">
+        <label>Print quality:
+          <select id="qualitySel">
+            <option value="normal">Normal</option>
+            <option value="high">HIGH</option>
+          </select>
+        </label>
+      </div>
+      <div class="row" style="margin-top:12px">
+        <button id="calcBtn">CALCULATE</button>
+      </div>
+      <div id="printTarget" class="muted">Select an image below to print.</div>
+      <pre id="printLog"></pre>
+      <div id="previewWrap" style="display:none;margin-top:12px">
+        <canvas id="previewCanvas" width="595" height="842"></canvas>
+      </div>
+    </section>
+
+    <section id="sec-ready" class="card section">
+      <h2>READY TO PRINT</h2>
+      <div id="readyDetail" class="muted">Calculate first to see cost details.</div>
+      <table id="costTable" style="display:none;margin-top:12px">
+        <thead><tr><th>Item</th><th>Value</th></tr></thead>
+        <tbody></tbody>
+      </table>
+      <div style="margin-top:12px;display:flex;gap:8px">
+        <button id="submitPrintBtn" disabled>Submit Print</button>
+      </div>
+      <pre id="readyLog"></pre>
+    </section>
+  </main>
+</div>
+<script src="/image.js?v=7"></script>
+</body>
+</html>

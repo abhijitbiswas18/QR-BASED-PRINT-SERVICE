@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BI Print Service - Admin Panel</title>
+<link rel="stylesheet" href="/style.css">
+<style>
+body{margin:0}
+.admin-layout{display:flex;min-height:100vh}
+.sidebar{width:220px;background:#111827;border-right:1px solid #334155;padding:16px 0;position:sticky;top:0;height:100vh;overflow:auto}
+.sidebar h3{margin:0 0 12px;padding:0 16px;font-size:12px;text-transform:uppercase;color:#64748b;letter-spacing:.05em}
+.side-item{display:block;width:100%;text-align:left;padding:10px 16px;border:0;background:none;color:#cbd5e1;cursor:pointer;font-size:14px;border-left:3px solid transparent}
+.side-item:hover{background:#1e293b;color:#fff}
+.side-item.active{background:#1e293b;color:#fff;border-left-color:#60a5fd;font-weight:600}
+.main{flex:1;padding:20px;overflow:auto}
+.section{display:none}
+.section.active{display:block}
+@media(max-width:720px){ .sidebar{width:100%;height:auto;position:static;display:flex;flex-wrap:wrap} .side-item{flex:1 1 40%} }
+.card{margin-bottom:16px}
+table{width:100%;border-collapse:collapse;margin-top:12px;font-size:13px}
+th,td{padding:8px;border:1px solid #334155;text-align:left;vertical-align:top}
+th{background:#0f172a}
+.badge{display:inline-block;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:600}
+.st-pending{background:#b45309;color:#fff}
+.st-approved{background:#1d4ed8;color:#fff}
+.st-printed{background:#15803d;color:#fff}
+.st-failed{background:#b91c1c;color:#fff}
+.st-rejected{background:#475569;color:#fff}
+.row-actions{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.row-actions select{padding:4px 6px}
+.btn-sm{padding:4px 8px;font-size:12px}
+.btn-danger{background:#dc2626}
+.btn-ok{background:#16a34a}
+.login-card{max-width:400px;margin:40px auto}
+body.theme-light{background:#f1f5f9;color:#0f172a}
+body.theme-light .bar{background:#ffffff;border-color:#cbd5e1}
+body.theme-light .sidebar{background:#e2e8f0;border-right-color:#cbd5e1}
+body.theme-light .side-item{color:#334155}
+body.theme-light .side-item:hover{background:#cbd5e1;color:#0f172a}
+body.theme-light .side-item.active{background:#cbd5e1;color:#0f172a;border-left-color:#2563eb}
+body.theme-light .card{background:#ffffff;border-color:#cbd5e1}
+body.theme-light h1,body.theme-light h2,body.theme-light th{color:#0f172a}
+body.theme-light th{background:#f1f5f9;border-color:#cbd5e1}
+body.theme-light td{border-color:#cbd5e1}
+body.theme-light input,body.theme-light select,body.theme-light textarea{background:#ffffff;color:#0f172a;border-color:#cbd5e1}
+body.theme-light .muted{color:#475569}
+body.theme-light pre{background:#f8fafc;color:#0f172a}
+body.theme-light code{color:#1d4ed8}
+body.theme-light .badge{color:#fff}
+</style>
+</head>
+<body>
+<header class="bar">
+  <h1>BI Print Service - Admin Panel</h1>
+</header>
+
+<div id="loginCard" class="card login-card">
+  <h2>Admin login</h2>
+  <input type="password" id="adminPw" placeholder="Admin password" style="padding:8px 10px;border-radius:6px;border:1px solid #475569;background:#0f172a;color:#e2e8f0;width:100%">
+  <button id="loginBtn" style="margin-top:10px;width:100%">Login</button>
+  <p id="loginErr" class="muted" style="color:#fca5a5;margin-top:8px"></p>
+</div>
+
+<div id="panel" style="display:none">
+  <div class="admin-layout">
+    <nav class="sidebar">
+      <button class="side-item active" data-section="sec-jobs">Print jobs</button>
+      <button class="side-item" data-section="sec-finance">Financial dashboard</button>
+      <button class="side-item" data-section="sec-files">Uploaded files</button>
+      <button class="side-item" data-section="sec-printers">Printer setup</button>
+      <button class="side-item" data-section="sec-cost">Cost center</button>
+      <button class="side-item" data-section="sec-server">SERVER SETTING</button>
+      <button class="side-item" data-section="sec-qr">QR code</button>
+      <button id="themeBtn" class="side-item" style="margin-top:16px;border-top:1px solid #334155;padding-top:12px">Theme: Dark</button>
+      <button id="sideLogoutBtn" class="side-item" style="color:#fca5a5">Logout</button>
+    </nav>
+    <main class="main">
+
+      <section id="sec-jobs" class="section active">
+        <div class="card">
+          <div class="row" style="justify-content:space-between">
+            <h2 style="margin:0">Print jobs</h2>
+            <div class="row">
+              <label>Status:
+                <select id="statusFilter">
+                  <option value="all">All</option>
+                  <option value="pending">Pending</option>
+                  <option value="approved">Approved</option>
+                  <option value="printed">Printed</option>
+                  <option value="failed">Failed</option>
+                  <option value="rejected">Rejected</option>
+                </select>
+              </label>
+              <label>Search:
+                <input type="text" id="jobSearch" placeholder="id, printer, file, status..." style="padding:4px 8px;border-radius:6px;border:1px solid #475569;background:#0f172a;color:#e2e8f0">
+              </label>
+              <label>Auto refresh: <input type="checkbox" id="autoRefresh" checked></label>
+              <button id="refreshBtn" class="btn-sm">Refresh</button>
+              <button id="logoutBtn" class="btn-sm btn-danger">Logout</button>
+            </div>
+          </div>
+          <div class="muted" style="margin:8px 0">Approval triggers actual printing using the job's (or overridden) printer.</div>
+          <div style="overflow:auto">
+            <table id="jobsTable">
+              <thead>
+                <tr>
+                  <th>SL No</th><th>Customer Name</th><th>Job ID</th><th>Printer</th><th>Color/BW</th><th>Pages</th><th>Copies</th><th>Copies/pg</th><th>Quality</th><th>Status</th><th>Created</th><th>Cost</th><th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="jobsBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section id="sec-finance" class="section">
+        <div class="card">
+          <div class="row" style="justify-content:space-between;flex-wrap:wrap">
+            <h2 style="margin:0">Financial dashboard</h2>
+            <div class="row">
+              <label>Period:
+                <select id="finPeriod">
+                  <option value="daily">Daily</option>
+                  <option value="monthly" selected>Monthly</option>
+                  <option value="yearly">Yearly</option>
+                </select>
+              </label>
+              <button id="finRefreshBtn" class="btn-sm">Refresh</button>
+            </div>
+          </div>
+          <div class="row" style="margin:12px 0">
+            <div class="card" style="flex:1;min-width:160px"><div class="muted">Total jobs</div><div id="finTotalJobs" style="font-size:24px;font-weight:700">0</div></div>
+            <div class="card" style="flex:1;min-width:160px"><div class="muted">Total cost</div><div id="finTotalCost" style="font-size:24px;font-weight:700">0</div></div>
+            <div class="card" style="flex:1;min-width:160px"><div class="muted">Avg cost / job</div><div id="finAvgCost" style="font-size:24px;font-weight:700">0</div></div>
+          </div>
+          <canvas id="finChart" width="900" height="300" style="width:100%;max-width:900px;background:#0f172a;border-radius:8px"></canvas>
+          <div style="overflow:auto;margin-top:12px">
+            <table>
+              <thead><tr><th>Period</th><th>Jobs</th><th>Cost</th></tr></thead>
+              <tbody id="finBody"></tbody>
+            </table>
+          </div>
+          <div class="row" style="margin-top:12px;gap:24px;flex-wrap:wrap">
+            <div>
+              <h4 style="margin:0 0 6px">By printer</h4>
+              <table style="min-width:260px"><thead><tr><th>Printer</th><th>Jobs</th><th>Cost</th></tr></thead><tbody id="finPrinterBody"></tbody></table>
+            </div>
+            <div>
+              <h4 style="margin:0 0 6px">By quality</h4>
+              <table style="min-width:200px"><thead><tr><th>Quality</th><th>Jobs</th></tr></thead><tbody id="finQualityBody"></tbody></table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="sec-files" class="section">
+        <div class="card">
+          <h2>Uploaded files (admin)</h2>
+          <div class="muted" style="margin-bottom:8px">All uploaded files. Submitted ones are hidden from users but kept on disk. Delete removes permanently from disk.</div>
+          <div class="row" style="margin-bottom:8px">
+            <button id="refreshFilesBtn" class="btn-sm">Refresh list</button>
+          </div>
+          <div style="overflow:auto">
+            <table>
+              <thead>
+                <tr><th>File</th><th>Size</th><th>Submitted by user</th><th>Actions</th></tr>
+              </thead>
+              <tbody id="adminFilesBody"></tbody>
+            </table>
+          </div>
+          <p id="adminFilesStatus" class="muted" style="margin-top:6px"></p>
+        </div>
+      </section>
+
+      <section id="sec-cost" class="section">
+        <div class="card">
+          <h2>Cost center</h2>
+          <div class="muted" style="margin-bottom:8px">Set printing rates. Cost per page = rate based on color/mono, quality, and simplex/duplex.</div>
+          <label style="margin-bottom:8px">Currency symbol/code: <input type="text" id="costCurrency" value="INR" style="width:80px;padding:6px 8px;border-radius:6px;border:1px solid #475569;background:#0f172a;color:#e2e8f0"></label>
+          <div style="overflow:auto">
+            <table>
+              <thead>
+                <tr><th>Category</th><th>Rate per page</th></tr>
+              </thead>
+              <tbody id="costCfgBody"></tbody>
+            </table>
+          </div>
+          <div class="row" style="margin-top:8px">
+            <button id="saveCostBtn" class="btn-sm btn-ok">Save rates</button>
+          </div>
+          <p id="costStatus" class="muted" style="margin-top:6px"></p>
+        </div>
+      </section>
+
+      <section id="sec-printers" class="section">
+        <div class="card">
+          <h2>Printer setup</h2>
+          <div class="muted" style="margin-bottom:8px">Enable/disable printers for users and configure supported modes.</div>
+          <div class="row" style="margin-bottom:8px">
+            <button id="refreshPrintersBtn" class="btn-sm">Refresh list</button>
+            <button id="savePrinterCfgBtn" class="btn-sm btn-ok">Save printer setup</button>
+          </div>
+          <div style="overflow:auto">
+            <table>
+              <thead>
+                <tr><th>Printer</th><th>Enabled for users</th><th>Color</th><th>Monochrome</th><th>Both-side (duplex)</th></tr>
+              </thead>
+              <tbody id="printerCfgBody"></tbody>
+            </table>
+          </div>
+          <p id="printerCfgStatus" class="muted" style="margin-top:6px"></p>
+        </div>
+      </section>
+
+      <section id="sec-server" class="section">
+        <div class="card">
+          <h2>Server address (used for QR code)</h2>
+          <div class="muted" style="margin-bottom:8px">Set the IP/hostname users scan. Takes effect on the QR code immediately. Example: <code>http://192.168.1.50:3000/</code></div>
+          <div class="row">
+            <input type="text" id="serverUrlInput" placeholder="http://10.0.0.5:3000/" style="flex:1;padding:8px 10px;border-radius:6px;border:1px solid #475569;background:#0f172a;color:#e2e8f0">
+            <button id="saveUrlBtn" class="btn-sm btn-ok">Save</button>
+            <button id="resetUrlBtn" class="btn-sm btn-danger">Reset to auto</button>
+          </div>
+          <p id="urlStatus" class="muted" style="margin-top:6px"></p>
+        </div>
+
+        <div class="card">
+          <h2>Branding (site header text &amp; favicon)</h2>
+          <div class="muted" style="margin-bottom:8px">Change the header text shown on the user page and the site favicon.</div>
+          <div class="row" style="flex-direction:column;align-items:stretch;gap:8px;max-width:420px">
+            <label>Header text:
+              <input type="text" id="headerTextInput" placeholder="BI Print Service" style="width:100%;padding:8px 10px;border-radius:6px;border:1px solid #475569;background:#0f172a;color:#e2e8f0">
+            </label>
+            <div class="row" style="align-items:center;gap:12px">
+              <img id="faviconPreview" alt="favicon" style="width:48px;height:48px;background:#fff;border-radius:6px">
+              <input type="file" id="faviconFile" accept="image/png,image/x-icon,image/svg+xml,image/jpeg">
+            </div>
+            <div class="row" style="gap:8px">
+              <button id="saveBrandBtn" class="btn-sm btn-ok">Save branding</button>
+            </div>
+            <p id="brandStatus" class="muted" style="margin:0"></p>
+          </div>
+        </div>
+        <div class="card">
+          <h2>Change admin password</h2>
+          <div class="muted" style="margin-bottom:8px">Update the admin password. Minimum 4 characters. After changing, log in again with the new password.</div>
+          <div class="row" style="flex-direction:column;align-items:stretch;gap:8px;max-width:360px">
+            <input type="password" id="oldPw" placeholder="Current password" style="padding:8px 10px;border-radius:6px;border:1px solid #475569;background:#0f172a;color:#e2e8f0">
+            <input type="password" id="newPw" placeholder="New password" style="padding:8px 10px;border-radius:6px;border:1px solid #475569;background:#0f172a;color:#e2e8f0">
+            <input type="password" id="newPw2" placeholder="Confirm new password" style="padding:8px 10px;border-radius:6px;border:1px solid #475569;background:#0f172a;color:#e2e8f0">
+            <button id="changePwBtn" class="btn-sm btn-ok">Change password</button>
+            <p id="pwStatus" class="muted" style="margin:0"></p>
+          </div>
+        </div>
+      </section>
+
+      <section id="sec-qr" class="section">
+        <div class="card">
+          <h2>QR code for system access</h2>
+          <div class="muted" style="margin-bottom:8px">Print this QR code to share the system access link.</div>
+          <div class="row" style="align-items:center">
+            <img id="adminQrImg" alt="QR code" style="width:160px;height:160px;background:#fff;border-radius:8px">
+            <div>
+              <p id="adminQrUrl" class="muted" style="word-break:break-all;margin:0"></p>
+              <button id="printQrBtn" class="btn-sm btn-ok" style="margin-top:10px">Print QR code</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+</div>
+<script src="/admin.js"></script>
+</body>
+</html>

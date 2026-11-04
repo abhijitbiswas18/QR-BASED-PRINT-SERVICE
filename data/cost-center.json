@@ -1,0 +1,13 @@
+{
+  "rates": {
+    "colorNormalSimplex": 20,
+    "colorNormalDuplex": 20,
+    "colorHighSimplex": 30,
+    "colorHighDuplex": 50,
+    "monoNormalSimplex": 5,
+    "monoNormalDuplex": 8,
+    "monoHighSimplex": 10,
+    "monoHighDuplex": 18
+  },
+  "currency": "INR"
+}

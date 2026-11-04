@@ -1,0 +1,14 @@
+{
+  "Microsoft XPS Document Writer": {
+    "enabled": true,
+    "color": true,
+    "mono": false,
+    "duplex": false
+  },
+  "Microsoft Print to PDF": {
+    "enabled": true,
+    "color": false,
+    "mono": true,
+    "duplex": true
+  }
+}
