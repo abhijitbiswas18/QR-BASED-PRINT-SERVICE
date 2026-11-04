@@ -391,6 +391,7 @@ function drawFinanceChart(buckets, currency) {
 }
 if ($('finPeriod')) $('finPeriod').addEventListener('change', loadFinance);
 if ($('finRefreshBtn')) $('finRefreshBtn').addEventListener('click', loadFinance);
+const _printQrBtn = $('printQrBtn'); if (_printQrBtn) _printQrBtn.addEventListener('click', printAdminQr);
 
 $('changePwBtn').addEventListener('click', async () => {
   const oldPw = $('oldPw').value;

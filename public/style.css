@@ -98,3 +98,13 @@ body.theme-light .topmenu{background:#ffffff;border-color:#cbd5e1}
 body.theme-light .menu-item{background:#f1f5f9;color:#334155}
 body.theme-light .menu-item.active{background:#2563eb;color:#fff}
 body.theme-light .menu-item:hover{background:#e2e8f0;color:#0f172a}
+
+/* Footer */
+.footer{position:fixed;bottom:0;left:0;right:0;z-index:50;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;padding:12px 24px;background:#111827;border-top:1px solid #334155;font-size:1.25rem;font-weight:700;color:#fff;margin-top:0}
+body{padding-bottom:60px}`
+.footer-left{text-align:left}
+.footer-right a{color:#fff;text-decoration:none}
+.footer-right a:hover{text-decoration:underline}
+body.theme-light .footer{background:#e2e8f0;border-top-color:#cbd5e1;color:#475569}
+body.theme-light .footer-right a{color:#2563eb}
+
