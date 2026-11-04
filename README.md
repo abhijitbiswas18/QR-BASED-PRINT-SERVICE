@@ -10,9 +10,19 @@ A small self-hosted service: a QR code links to a web page where people can uplo
 
 ## Run
 ```
-cd "C:\Users\Abhijit\Desktop\OPEN PROJECTS\P1 REA INSTALL\bi-print-service"
+extract the files and cd to extraced folder "/QR-BASED-PRINT-SERVICE-main/"
 npm install
 node server.js
+
+OR
+
+You can Run the Installer "Scan QR To Print"
+It install the service for you in C:\PrintService\
+Creates data/, uploads/, and converted/ folders.
+Prompts during setup for Branding (site header text) and writes data/config.json with it.
+Compiles/installs a Windows service wrapper (PrintServiceHost.exe) that runs the Node server hidden and starts it automatically (also available as PrintServiceHost.exe /install / /uninstall).
+Registers and starts the “BI Print Service” Windows service.
+
 ```
 Then open `http://localhost:3000/` on this machine, or scan the QR (printed on the page) from a phone on the same Wi-Fi. Admin panel: `http://localhost:3000/admin.html` (default password `admin`, change via `ADMIN_PASSWORD` env).
 
@@ -50,7 +60,6 @@ Then open `http://localhost:3000/` on this machine, or scan the QR (printed on t
 - Image printing uses System.Drawing (GDI+) - works for JPG/PNG/GIF/BMP/WEBP/TIFF.
 - For images you can choose **Copies per page** (1/2/4/6/9) in an N-up layout; a **Print preview** button renders the page on a canvas before submitting.
 - Pages option for documents is a dropdown (All / First / Last / Odd / Even / Custom range). Custom range reveals a text field.
-- For DOC/DOCX/ODF/ODT/RTF you must install **LibreOffice** so `soffice` is on PATH - those files are converted to PDF first, then the selected pages are printed. Without LibreOffice the API returns a clear "not found" error.
-- PDF printing uses SumatraPDF 3.6.1 (portable, in `C:\Users\Abhijit\tools\sumatra\SumatraPDF.exe`). If you move it, set `SUMATRA` in `server.js`.
+- PDF printing uses SumatraPDF 3.6.1 .
 - Color/B&W for PDF is passed via Sumatra's `-print-settings color|monochrome`. For a real printer make sure the driver honours it; virtual "Print to PDF" writers may save a prompt.
 - Multer 1.x is used (deprecation warning only); bump to 2.x if you want the patched line.
