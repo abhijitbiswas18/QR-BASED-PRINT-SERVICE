@@ -13,14 +13,14 @@ A small self-hosted service: a QR code links to a web page where people can uplo
 extract the files and cd to extraced folder "/QR-BASED-PRINT-SERVICE-main/"
 npm install
 node server.js
-
-OR
 ```
-You can Run the Installer "Scan QR To Print"
-It install the service for you in C:\PrintService\
-Creates data/, uploads/, and converted/ folders.
-Prompts during setup for Branding (site header text) and writes data/config.json with it.
-Compiles/installs a Windows service wrapper (PrintServiceHost.exe) that runs the Node server hidden and starts it automatically (also available as PrintServiceHost.exe /install / /uninstall).
+OR
+
+You can Run the Installer "Scan QR To Print" <br>
+It install the service for you in C:\PrintService\<br>
+Creates data/, uploads/, and converted/ folders.<br>
+Prompts during setup for Branding (site header text) and writes data/config.json with it.<br>
+Compiles/installs a Windows service wrapper (PrintServiceHost.exe)<br> that runs the Node server hidden and starts it automatically <br>(also available as PrintServiceHost.exe /install / /uninstall).
 Registers and starts the “BI Print Service” Windows service.
 
 Then open `http://localhost:3000/` on this machine, or scan the QR (printed on the page) from a phone on the same Wi-Fi. Admin panel: `http://localhost:3000/admin.html` (default password `admin`, change via `ADMIN_PASSWORD` env).
