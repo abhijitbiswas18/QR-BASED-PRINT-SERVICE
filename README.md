@@ -1,8 +1,8 @@
-# Scan QR To Print
+﻿# Scan QR To Print
 
 A self-hosted QR-driven print portal. A printed QR code opens a web page where people can upload documents or images, review the upload, choose an available printer, and submit a print job. Administrators approve, reject, reprint, and download jobs, manage printers and branding, calculate cost, and view financial reports. Everything runs locally; no cloud services are required.
 
-Version `2.0.1`.
+Version `2.0.2`.
 
 ## Features
 
@@ -73,7 +73,7 @@ admin
 
 Change it from the Admin panel immediately after installation. If `ADMIN_PASSWORD` is set in the environment, that value is used instead.
 
-## Windows installer (version 2.0.1)
+## Windows installer (version 2.0.2)
 
 The installer contains Node.js 22, all `node_modules`, SumatraPDF, PowerShell/.NET helpers, the web application, and the Windows service wrapper.
 
@@ -245,9 +245,9 @@ Note: Node.js, `node_modules`, extracted artifacts, generated uploads, and build
 After installing GitHub CLI and authenticating:
 
 ```powershell
-gh release create v2.0.1 "Scan QR To Print.exe" ^
+gh release create v2.0.2 "Scan QR To Print V2.0.2.exe" ^
   --repo abhijitbiswas18/QR-BASED-PRINT-SERVICE ^
-  --title "Scan QR To Print v2.0.1" ^
+  --title "Scan QR To Print v2.0.2" ^
   --notes "Windows installer for Scan QR To Print, including Node.js, dependencies, SumatraPDF, branding prompt, automatic Windows service, cost center, image printing, and financial dashboard."
 ```
 
