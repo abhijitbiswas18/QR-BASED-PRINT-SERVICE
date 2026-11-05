@@ -1,6 +1,6 @@
 {
   "name": "bi-print-service",
-  "version": "1.0.0",
+  "version": "2.0.1",
   "description": "BI Print Service - QR-based document upload, review, and select-printer printing (Color / B&W)",
   "main": "server.js",
   "bin": "server.js",
