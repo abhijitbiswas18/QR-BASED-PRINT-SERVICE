@@ -52,11 +52,7 @@ Version `2.0.2`.
 
 ## Quick start (development)
 
-```powershell
-cd "C:\Users\Abhijit\Desktop\OPEN PROJECTS\P1 REA INSTALL\Scan QR To Print"
-npm install
-node server.js
-```
+Download the Latest version then run it as Administrator.
 
 Then open:
 
