@@ -52,7 +52,7 @@ Version `2.0.2`.
 
 ## Quick start (development)
 
-Download the Latest version then run it as Administrator.
+Download the Latest version Installer and then run it as Administrator.
 
 Then open:
 
@@ -67,7 +67,7 @@ Default admin password is:
 admin
 ```
 
-Change it from the Admin panel immediately after installation. If `ADMIN_PASSWORD` is set in the environment, that value is used instead.
+Change it from the Admin panel immediately after installation.
 
 ## Windows installer (version 2.0.2)
 
@@ -101,80 +101,12 @@ sc qc BI Print Service
 
 Look for `START_TYPE : 2 AUTO_START`.
 
-### Manual service commands
 
-```powershell
-C:\PrintService\PrintServiceHost.exe /install
-sc start BI Print Service
-C:\PrintService\PrintServiceHost.exe /uninstall
-```
-
-### Run from source locally
-
-```powershell
-node C:\PrintService\server.js
-```
-
-The service simply runs `node.exe server.js` hidden behind the API.
-
-## Environment variables
-
-| Variable | Default | Purpose |
-|---|---|---|
-| `PORT` | `3000` | TCP port for the web server |
-| `HOST_URL` | auto-detected LAN address | URL shown in the QR code |
-| `ADMIN_PASSWORD` | `admin` | Admin password. Persisted to `data/admin-password.txt` if not set |
-| `HEADER_TEXT` | persisted in config | Overrides `data/config.json` header text on startup |
-| `THEME` | `dark` | Optional initial theme override |
-| `LIBREOFFICE_PATH` | `soffice` on PATH | Location of LibreOffice for office-document conversion |
 
 ## Runtime data files
 
 All runtime data is stored under `data/` inside `C:\PrintService`:
 
-- `config.json` - branding/header, theme, server URL, favicon
-- `printer-config.json` - per-printer capabilities and enablement
-- `cost-center.json` - currency + color/monochrome per-page cost
-- `jobs.json` - queued print jobs
-- `submitted.json` - submitted job records
-- `upload-meta.json` - per-session upload ownership and metadata
-- `admin-password.txt` - persisted admin password
-- `uploads/` - uploaded document files (50 MB maximum)
-- `converted/` - generated preview/conversion outputs
-
-Do not commit runtime data to source control.
-
-## API reference
-
-User-facing:
-
-- `GET /` - PDF/document home page (server-injected branding and theme)
-- `GET /image.html` - dedicated image print page
-- `GET /admin.html` - admin panel
-- `POST /api/upload` - multipart upload, `files[]`
-- `GET /api/files` - uploaded files for the current session
-- `DELETE /api/files/:id` - delete a user's own uploaded file
-- `GET /api/printers` - installed printers
-- `GET /api/printer-capabilities` - effective capabilities
-- `POST /api/print` - create a queued job `{ fileId, printer, color, copiesPerPage?, pages? }`
-- `GET /api/theme` - current theme
-- `GET /api/header` - branding header text
-- `GET /api/qr` - QR data URL
-- `POST /api/calculate-cost` - cost preview
-
-Admin (requires admin token headers):
-
-- `POST /api/admin/login` - `{ password }` -> `{ ok, token }`
-- `GET /api/admin/jobs` / approve / reject / reprint
-- `GET /api/admin/files` / hard delete
-- `GET /POST /api/admin/printer-config` - printer capabilities
-- `GET /POST /api/admin/theme` - theme
-- `POST /api/admin/change-password` - `{ oldPassword, newPassword }`
-- `GET /POST /api/admin/cost-center` - rates/currency
-- `GET /api/admin/finance` - reports
-- `GET /POST /api/admin/brand` - branding display
-- `GET /POST /api/admin/config` - combined config
-- `POST /api/admin/config/reset` - reset config
 
 ## Admin features
 
@@ -187,18 +119,12 @@ Admin (requires admin token headers):
 - Cost center: rates and currency.
 - Financial dashboard: total jobs, cost aggregates, printer and quality breakdowns.
 
-## Multi-user isolation
-
-Each browser receives a random anonymous session id stored in `localStorage`. Uploads are recorded in `upload-meta.json` and treated as owned by that session. The user pages only show and delete their own uploads. Administrator users can view and delete all uploaded files.
-
 ## Branding
 
 During installation the administrator is prompted for the header text. The default is **Biswas Infotech**. You can change branding later:
 
-- from the admin panel, or
-- by editing `data/config.json`, or
-- by launching the server with `HEADER_TEXT`.
-
+- from the admin panel,
+- 
 ## QR-based printing flow
 
 1. Open the portal and display/print the QR code.
@@ -210,50 +136,16 @@ During installation the administrator is prompted for the header text. The defau
 7. The administrator reviews pending jobs.
 8. The administrator approves, rejects, changes printer, or reprints as needed.
 9. Jobs, status, cost, and financial reports persist in the local data files.
+service, cost center, image printing, and financial dashboard."
 
-## Rebuilding the installer
-
-To ship a new version:
-
-1. Update source in the project folder.
-2. Stage dependencies (Node.js 22, `node_modules`, SumatraPDF, PowerShell scripts, service host).
-3. Compile the service host:
-
-```powershell
-csc /target:winexe /out:PrintServiceHost.exe /r:System.ServiceProcess.dll PrintServiceHost.cs
-```
-
-4. Edit `setup.iss`:
-   - `AppVersion`
-   - `OutputBaseFilename`
-5. Build:
-
-```powershell
-ISCC setup.iss
-```
-
-6. Publish the resulting `.exe` as a **GitHub Release** asset rather than committing it to the repository.
-
-Note: Node.js, `node_modules`, extracted artifacts, generated uploads, and build output should remain in `.gitignore`.
-
-## GitHub release using CLI
-
-After installing GitHub CLI and authenticating:
-
-```powershell
-gh release create v2.0.2 "Scan QR To Print V2.0.2.exe" ^
-  --repo abhijitbiswas18/QR-BASED-PRINT-SERVICE ^
-  --title "Scan QR To Print v2.0.2" ^
-  --notes "Windows installer for Scan QR To Print, including Node.js, dependencies, SumatraPDF, branding prompt, automatic Windows service, cost center, image printing, and financial dashboard."
-```
 
 ## Notes on UAC / installation
 
-Creating a Windows service requires elevation. The installer is marked as administrator-required and Windows will show UAC consent. A true no-UAC system-service installer is not possible on a standard Windows machine. If you need an entirely non-elevated setup, the portal can run under a user-level startup hook, but it will not be a system-wide Windows service.
+Run the Installer as administrator
 
 ## License
 
-This project is distributed as a free tool. footer text reads:
+This project is distributed as a free tool. 
 
 ```text
 THIS IS A FREE TOOL TO USE.
