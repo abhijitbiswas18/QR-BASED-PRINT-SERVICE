@@ -2,7 +2,7 @@
 
 A self-hosted QR-driven print portal. A printed QR code opens a web page where people can upload documents or images, review the upload, choose an available printer, and submit a print job. Administrators approve, reject, reprint, and download jobs, manage printers and branding, calculate cost, and view financial reports. Everything runs locally; no cloud services are required.
 
-Version `2.0.2`.
+Version `3.0.2`.
 
 ## Features
 
@@ -26,7 +26,8 @@ Version `2.0.2`.
   - cost-center rates are admin configurable
   - color prints and monochrome prints have separate per-page rates
   - currency is persisted with the cost center
-  - default rates: **color 20.00**, **monochrome 10.00**, currency **INR**
+  - default rates: **color 20.00**, **monochrome 10.00**, **passport photo (PP) base 10.00**, currency **INR**
+  - passport photo cost = (photos per page / 6) * PP base rate
   - cost calculation endpoint for previews
 - Financial dashboard:
   - day, month, and year aggregates
@@ -59,6 +60,7 @@ Then open:
 
 - Home (PDF/document flow): `http://localhost:3000/`
 - Image print page: `http://localhost:3000/image.html`
+- Passport photo print: `http://localhost:3000/passport.html`
 - Admin panel: `http://localhost:3000/admin.html`
 - QR code: `http://localhost:3000/api/qr`
 
@@ -95,15 +97,15 @@ Optional environment variables:
 - `THEME` - `dark` or `light`
 - `HEADER_TEXT` - site header text
 
-## Windows installer (version 2.0.2)
+## Windows installer (version 3.0.2)
 
 The installer contains Node.js 22, all `node_modules`, SumatraPDF, PowerShell/.NET helpers, the web application, and the Windows service wrapper.
 
-- Installer name: **Scan QR To Print.exe**
+- Installer name: **Scan-QR-To-Print-3.0.2.exe**
 - Install directory: `C:\PrintService\`
 - Publisher: **Abhijit Biswas**
 - Information URL: `https://github.com/abhijitbiswas18`
-- System service name: **BI Print Service**
+- System service name: **QR-Based-Print-Service**
 - Service startup type: **Automatic**
 - Requires administrator rights because Windows service registration requires elevated permission. The installer asks for UAC consent and cannot be made truly no-UAC while installing a system service.
 - Admin panel remains at `http://localhost:3000/admin.html`.
@@ -122,7 +124,7 @@ At uninstall time, the installer stops and deletes BI Print Service before remov
 ### Verify service startup type
 
 ```powershell
-sc qc BI Print Service
+sc qc "QR-Based-Print-Service"
 ```
 
 Look for `START_TYPE : 2 AUTO_START`.
