@@ -12,7 +12,9 @@ converted/
 # Build outputs
 dist/
 build/
+installer_output/
 *.exe
+!vendor/sumatra/SumatraPDF.exe
 !vendor/sumatra/SumatraPDF.exe
 *.log
 build.err
