@@ -36,3 +36,5 @@ Thumbs.db
 
 # Packaged assets that may be large (optional)
 # vendor/sumatra/SumatraPDF.exe
+
+!PrintServiceHost.exe

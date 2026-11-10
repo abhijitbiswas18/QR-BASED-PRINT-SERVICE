@@ -29,13 +29,14 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 
 [Files]
 Source: "dist\bi-print-service.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "PrintServiceHost.exe"; DestDir: "{app}"; Flags: ignoreversion
 
 [Icons]
 Name: "{group}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"
 
 [Run]
 ; Create and start the Windows service
-Filename: "{sys}\sc.exe"; Parameters: "create {#ServiceName} binPath= ""{app}\{#MyAppExeName}"" start= auto DisplayName= ""{#MyAppName}"""; Flags: runhidden waituntilterminated
+Filename: "{sys}\sc.exe"; Parameters: "create {#ServiceName} binPath= ""{app}\PrintServiceHost.exe"" start= auto DisplayName= ""{#MyAppName}"""; Flags: runhidden waituntilterminated
 Filename: "{sys}\sc.exe"; Parameters: "description {#ServiceName} ""QR-based document upload, review, and select-printer printing service."""; Flags: runhidden waituntilterminated
 Filename: "{sys}\sc.exe"; Parameters: "start {#ServiceName}"; Flags: runhidden waituntilterminated
 
