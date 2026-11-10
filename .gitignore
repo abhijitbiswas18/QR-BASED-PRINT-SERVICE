@@ -13,6 +13,7 @@ converted/
 dist/
 build/
 *.exe
+!vendor/sumatra/SumatraPDF.exe
 *.log
 build.err
 build.log
