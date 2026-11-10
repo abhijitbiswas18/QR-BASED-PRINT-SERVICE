@@ -1,16 +1,16 @@
-﻿{
+{
   "name": "bi-print-service",
-  "version": "2.0.2",
+  "version": "3.0.2",
   "description": "BI Print Service - QR-based document upload, review, and select-printer printing (Color / B&W)",
   "main": "server.js",
   "bin": "server.js",
   "scripts": {
     "start": "node server.js",
-    "build": "pkg . --targets node22-win-x64 --output dist/bi-print-service.exe"
+    "build": "pkg . --targets node18-win-x64 --output dist/bi-print-service.exe"
   },
   "pkg": {
     "targets": [
-      "node22-win-x64"
+      "node18-win-x64"
     ],
     "assets": [
       "public/**/*",
