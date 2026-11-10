@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BI Print Service - Passport Photo Print</title>
+  <link rel="stylesheet" href="/style.css" />
+  <script type="importmap">
+  {
+    "imports": {
+      "onnxruntime-web": "https://cdn.jsdelivr.net/npm/onnxruntime-web@1.21.0-dev.20250206-d981b153d3/dist/ort.all.min.mjs"
+    }
+  }
+  </script>
+  <style>
+    .process-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+    .preview-col h3{margin:0 0 8px;font-size:14px}
+    .preview-col canvas{width:100%;max-width:320px;height:auto;border:1px solid #334155;border-radius:8px;background:#0b1220}
+    .controls .control-group{margin-bottom:12px}
+    .manual-adjust .btn-row{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}
+    .btn-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+    .btn{padding:8px 16px;border:0;border-radius:8px;background:#2563eb;color:#fff;cursor:pointer;font-weight:600}
+    .btn.small{padding:4px 10px;font-size:13px}
+    .btn.primary{background:#16a34a}
+    .btn:disabled{background:#475569;cursor:not-allowed}
+    .toggle-row{margin-top:8px;font-size:13px}
+    .print-preview-wrap{margin-top:12px;overflow:hidden;background:#0b1220;border:1px solid #334155;border-radius:8px;padding:8px;min-height:200px}
+    .print-preview{display:grid;margin:0 auto;background:#fff}
+    .print-area{display:none}
+    .status{font-size:13px;margin-top:6px}
+    .status.success{color:#4ade80}
+    .status.error{color:#fca5a5}
+    @media(max-width:760px){ .process-grid{grid-template-columns:1fr} }
+  </style>
+</head>
+<body>
+<header class="bar">
+  <div>
+    <h1>BI Print Service - Passport Photo Print</h1>
+    <span class="sub">Upload photo -&gt; Detect &amp; center -&gt; Print layout -&gt; Submit print job</span>
+  </div>
+  <div class="tabs">
+    <a class="tab" href="/">PDF PRINT</a>
+    <a class="tab" href="/image.html">IMAGE PRINT</a>
+    <a class="tab active" href="/passport.html">PASSPORT PHOTO</a>
+  </div>
+</header>
+
+<main class="app-main">
+  <!-- Step 1: Upload -->
+  <section class="card" id="uploadCard">
+    <h2>1. Upload Photo</h2>
+    <div id="dropZone" class="dropzone" tabindex="0" role="button" aria-label="Upload photo">
+      <div class="drop-content">
+        <div class="drop-icon">&#128247;</div>
+        <p>Drag &amp; drop an image here, or click to select</p>
+        <small>JPG, PNG supported (processed in-browser)</small>
+      </div>
+      <input type="file" id="fileInput" accept="image/*" hidden />
+    </div>
+    <div id="uploadStatus" class="status"></div>
+    <div class="row" style="margin-top:8px;align-items:center">
+      <label>Background color:
+        <select id="bgColorSel">
+          <option value="#ffffff" selected>White</option>
+          <option value="#add8e6">Light Blue</option>
+        </select>
+      </label>
+    </div>
+    <div id="bgProgressWrap" style="display:none;margin-top:8px">
+      <div style="background:#0b1220;border:1px solid #334155;border-radius:8px;overflow:hidden;height:14px">
+        <div id="bgProgressBar" style="height:100%;width:0%;background:#2563eb;transition:width .2s"></div>
+      </div>
+      <div id="bgProgressText" class="status"></div>
+    </div>
+  </section>
+
+  <!-- Step 2: Processing -->
+  <section class="card" id="processCard" hidden>
+    <h2>2. Detect, Center &amp; Correct</h2>
+    <div class="process-grid">
+      <div class="preview-col">
+        <h3>Original</h3>
+        <canvas id="originalCanvas" width="320" height="400"></canvas>
+      </div>
+      <div class="preview-col">
+        <h3>Passport Photo</h3>
+        <canvas id="resultCanvas" width="413" height="531"></canvas>
+        <div class="toggle-row">
+          <label><input type="checkbox" id="showBefore" /> Show before (original crop)</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="controls">
+      <div class="control-group">
+        <label for="photoSize">Photo size</label>
+        <select id="photoSize">
+          <option value="passport" selected>Passport (31 x 41 mm)</option>
+        </select>
+      </div>
+      <div class="control-group">
+        <label for="correctionStrength">Color correction</label>
+        <input type="range" id="correctionStrength" min="0" max="100" value="70" />
+        <span id="correctionValue">70%</span>
+      </div>
+    </div>
+
+    <div class="manual-adjust">
+      <h3>Manual adjust (if auto-detect is off)</h3>
+      <div class="btn-row">
+        <button id="nudgeUp" class="btn small">&#8593;</button>
+        <button id="nudgeDown" class="btn small">&#8595;</button>
+        <button id="nudgeLeft" class="btn small">&#8592;</button>
+        <button id="nudgeRight" class="btn small">&#8594;</button>
+        <button id="zoomIn" class="btn small">Zoom +</button>
+        <button id="zoomOut" class="btn small">Zoom -</button>
+        <button id="reDetect" class="btn small">Re-detect face</button>
+      </div>
+      <p id="detectStatus" class="status"></p>
+    </div>
+
+    <div class="btn-row">
+      <button id="toPrintBtn" class="btn primary">Continue to Print &rarr;</button>
+    </div>
+  </section>
+
+  <!-- Step 3: Print layout + job -->
+  <section class="card" id="printCard" hidden>
+    <h2>3. Print Layout &amp; Submit Job</h2>
+    <div class="print-controls">
+      <div class="control-group" style="display:none">
+        <label for="pageSize">Page size</label>
+        <select id="pageSize">
+          <option value="A4" selected>A4 (210 x 297 mm)</option>
+          <option value="A5">A5 (148 x 210 mm)</option>
+          <option value="Letter">Letter (215.9 x 279.4 mm)</option>
+          <option value="4x6">4x6 (101.6 x 152.4 mm)</option>
+        </select>
+      </div>
+      <div class="control-group">
+        <label for="photosPerPage">Photos per page</label>
+        <select id="photosPerPage">
+          <option value="6">6</option>
+          <option value="12" selected>12</option>
+          <option value="18">18</option>
+          <option value="24">24</option>
+          <option value="30">30</option>
+          <option value="36">36</option>
+        </select>
+      </div>
+      <div class="control-group">
+        <label><input type="checkbox" id="showBorder" checked /> Photo border</label>
+      </div>
+    </div>
+
+    <div class="print-preview-wrap">
+      <div id="printPreview" class="print-preview"></div>
+    </div>
+
+    <div class="print-controls" style="margin-top:12px">
+      <div class="control-group">
+        <label>Printer:
+          <select id="printerSel"></select>
+        </label>
+      </div>
+      <div class="control-group">
+        <label class="radio"><input type="radio" name="mode" value="color" checked> Color</label>
+        <label class="radio"><input type="radio" name="mode" value="mono"> Black &amp; White</label>
+      </div>
+      <div class="control-group">
+        <label>Copies:
+          <input type="number" id="copiesInput" value="1" min="1" max="999" style="width:70px;padding:6px 8px;border-radius:6px;border:1px solid #475569;background:#0f172a;color:#e2e8f0">
+        </label>
+      </div>
+      <div class="control-group">
+        <label>Print quality:
+          <select id="qualitySel">
+            <option value="normal">Normal</option>
+            <option value="high">HIGH</option>
+          </select>
+        </label>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button id="backToEdit" class="btn">Back to Edit</button>
+      <button id="calcBtn" class="btn">Calculate cost</button>
+      <button id="createJobBtn" class="btn primary" disabled>Create Print Job</button>
+    </div>
+    <div id="jobStatus" class="status" style="margin-top:8px"></div>
+  </section>
+</main>
+
+<div id="printArea" class="print-area"></div>
+
+<!-- face-api.js -->
+<script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
+<script src="/passport.js?v=1"></script>
+</body>
+</html>

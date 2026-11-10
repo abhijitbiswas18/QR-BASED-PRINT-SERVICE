@@ -1,0 +1,35 @@
+# Dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Runtime data (generated at runtime, do not commit)
+data/
+uploads/
+converted/
+
+# Build outputs
+dist/
+build/
+*.exe
+*.log
+build.err
+build.log
+
+# Environment / secrets
+.env
+.env.*
+admin-password.txt
+
+# OS / editor
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+.idea/
+.vscode/
+*.code-workspace
+
+# Packaged assets that may be large (optional)
+# vendor/sumatra/SumatraPDF.exe

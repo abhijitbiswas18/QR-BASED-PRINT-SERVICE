@@ -1,0 +1,29 @@
+﻿{
+  "name": "bi-print-service",
+  "version": "2.0.2",
+  "description": "BI Print Service - QR-based document upload, review, and select-printer printing (Color / B&W)",
+  "main": "server.js",
+  "bin": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "build": "pkg . --targets node22-win-x64 --output dist/bi-print-service.exe"
+  },
+  "pkg": {
+    "targets": [
+      "node22-win-x64"
+    ],
+    "assets": [
+      "public/**/*",
+      "print-image.ps1",
+      "make-preview-pdf.ps1",
+      "vendor/sumatra/SumatraPDF.exe"
+    ],
+    "outputPath": "dist"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "multer": "^1.4.5-lts.1",
+    "pdf-parse": "^2.4.5",
+    "qrcode": "^1.5.3"
+  }
+}
